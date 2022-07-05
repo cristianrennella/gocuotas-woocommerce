@@ -5,6 +5,7 @@ class WC_Gateway_GoCuotas extends WC_Payment_Gateway
     public function __construct()
     {
         $this->id = 'gocuotas';
+        $this->icon = plugin_dir_url(__FILE__).'logo-mobile.svg';
         $this->has_fields = false;
         $this->method_title = 'Go Cuotas';
         $this->method_description = 'Plugin para integración de Go Cuotas en WooCommerce';
