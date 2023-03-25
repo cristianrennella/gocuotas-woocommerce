@@ -1,5 +1,7 @@
 .payment_method_gocuotas img {
   max-width: 30px;
+  width: 18px;
+  height: auto;
 }
 
 .singlefee {

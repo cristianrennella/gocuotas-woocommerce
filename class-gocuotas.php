@@ -138,7 +138,8 @@ class WC_Gateway_GoCuotas extends WC_Payment_Gateway
             $order_total = WC()->cart->total;
         }
 
-        if(get_option('woocommerce_gocuotas_settings', true)['max_total'] < $order_total && get_option('woocommerce_gocuotas_settings', true)['max_total']!= '') {
+        $gocuotas_settings = get_option('woocommerce_gocuotas_settings', true);
+        if (is_array($gocuotas_settings) && isset($gocuotas_settings['max_total']) && $gocuotas_settings['max_total'] < $order_total && $gocuotas_settings['max_total']!= '') {
             unset($available_gateways['gocuotas']);
         }
 
@@ -337,3 +338,4 @@ function override_cancel_unpaid_orders()
     wp_clear_scheduled_hook('woocommerce_cancel_unpaid_orders');
     wp_schedule_single_event(time() + (absint($held_duration) * 60), 'woocommerce_cancel_unpaid_orders');
 }
+add_action( 'woocommerce_cancel_unpaid_orders', 'wc_cancel_unpaid_orders' ); 
