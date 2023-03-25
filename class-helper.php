@@ -54,18 +54,22 @@ class GoCuotas_Helper
     { 
         if (is_admin()) return $price;
 
-        if(get_option('woocommerce_gocuotas_settings', true)['enabled'] == 'no') return $price;  
+        $options = get_option('woocommerce_gocuotas_settings', true);
+        if (is_array($options) && $options['enabled'] == 'no') {
+            return $price;
+        }  
 
         $p = wc_get_product($product->get_id());
 
-        if(get_option('woocommerce_gocuotas_settings', true)['max_total'] < $p->get_price() && get_option('woocommerce_gocuotas_settings', true)['max_total']!= '') return $price;
+        if (is_array($options) && isset($options['max_total']) && $options['max_total'] < $p->get_price()) {
+            return $price;
+        }
         
-        if (get_option('woocommerce_gocuotas_settings', true)['show_fees_product'] == 'yes' && is_product()) {
-            
+        if (is_array($options) && isset($options['show_fees_product']) && $options['show_fees_product'] == 'yes' && is_product()) {
             return $this->fees($price, $product->get_id());
         }
 
-        if (get_option('woocommerce_gocuotas_settings', true)['show_fees_category'] == 'yes' && !is_product()) {
+        if (is_array($options) && isset($options['show_fees_category']) && $options['show_fees_category'] == 'yes' && !is_product()) {
             return $this->fees($price, $product->get_id());
         }
 
@@ -74,12 +78,11 @@ class GoCuotas_Helper
 
     public function show_fees_product_variations($variation_data, $product, $variation)
     {
-        if (get_option('woocommerce_gocuotas_settings', true)['show_fees_product'] == 'yes' && is_product()) {
-            $cuota = $variation_data['display_price'] / get_option('woocommerce_gocuotas_settings', true)['fees_number'];
+        $options = get_option('woocommerce_gocuotas_settings', true);
+        if (is_array($options) && isset($options['show_fees_product']) && $options['show_fees_product'] == 'yes' && is_product()) {
+            $cuota = $variation_data['display_price'] / $options['fees_number'];
             $cuota = number_format($cuota, 2, '.', ',');
-            $variation_data['price_html'] .= '<span class="custom-price-prefix">' . get_option('woocommerce_gocuotas_settings', true)['fees_text'] . ' $' . $cuota . ' con <a id="fee" href="https://www.gocuotas.com" target="_blank"> <img style="max-height: 35px;" src="' . plugin_dir_url(__FILE__) . 'logo.svg"> </a></span>';
-
-            return $variation_data;
+            $variation_data['price_html'] .= '<span class="custom-price-prefix">' . $options['fees_text'] . ' $' . $cuota . ' con <a id="fee" href="https://www.gocuotas.com" target="_blank"> <img style="max-height: 35px;" src="' . plugin_dir_url(__FILE__) . 'logo.svg"> </a></span>';
         }
 
         return $variation_data;
